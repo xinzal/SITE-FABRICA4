@@ -160,12 +160,12 @@ async function carregarPedidos() {
         data.forEach(r=>{
             const tr = document.createElement("tr");
             tr.innerHTML = `
-                <td>${r.numero}</td>
+               <td>${r.dataPedido}</td>
                 <td>${r.fabrica}</td>
                 <td>${r.codigo}</td>
                 <td>${r.descricao}</td>
                 <td>${r.quantidade}</td>
-                <td>${r.dataPedido}</td>
+                  <td>${r.numero}</td>
             `;
             tbody.appendChild(tr);
         });
