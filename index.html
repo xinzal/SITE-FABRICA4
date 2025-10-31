@@ -5,208 +5,204 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Solicitar Pedido</title>
 <style>
-    body { font-family: Arial, sans-serif; background-color: #f2f4f8; padding: 20px; }
-    h1 { color: #003c8f; margin-bottom: 20px; }
-    label { display: block; margin-top: 15px; font-weight: bold; }
-    input, select { width: 100%; padding: 8px; margin-top: 5px; box-sizing: border-box; }
-    button { padding: 8px 15px; margin-top: 15px; background-color: #0073c9; color: white; border: none; cursor: pointer; border-radius: 4px; }
-    button:hover { background-color: #005fa3; }
-    table { width: 100%; border-collapse: collapse; margin-top: 15px; background-color: #fff; }
-    th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
-    th { background-color: #0073c9; color: white; }
-    td button { background-color: #c0392b; }
-    td button:hover { background-color: #922b21; }
-    nav { margin-bottom: 20px; }
-    nav button { margin-right: 10px; }
-    section { display: none; }
-    section.active { display: block; }
+  body { font-family: Arial, sans-serif; background-color: #f2f4f8; padding: 20px; }
+  h1 { color: #003c8f; margin-bottom: 20px; }
+  label { display: block; margin-top: 15px; font-weight: bold; }
+  input, select { width: 100%; padding: 8px; margin-top: 5px; box-sizing: border-box; }
+  button { padding: 8px 15px; margin-top: 15px; background-color: #0073c9; color: white; border: none; cursor: pointer; border-radius: 4px; }
+  button:hover { background-color: #005fa3; }
+  table { width: 100%; border-collapse: collapse; margin-top: 15px; background-color: #fff; }
+  th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+  th { background-color: #0073c9; color: white; }
+  .hidden { display: none; }
+  .tabs { margin-bottom: 20px; }
+  .tabs button { margin-right: 10px; }
 </style>
 </head>
 <body>
 
 <h1>Solicitar Pedido</h1>
 
-<nav>
-    <button id="btnForm" class="active">Cadastrar Pedido</button>
-    <button id="btnView">Visualizar Pedidos</button>
-</nav>
+<div class="tabs">
+  <button onclick="mostrarAba('cadastro')">Cadastrar Pedido</button>
+  <button onclick="mostrarAba('visualizar')">Visualizar Pedidos</button>
+</div>
 
-<section id="formSection" class="active">
-<form id="pedidoForm">
+<!-- ======== ABA CADASTRO ======== -->
+<div id="cadastro">
+  <form id="pedidoForm">
     <label for="numeroPedido">Número do Pedido:</label>
     <input type="text" id="numeroPedido">
 
     <label for="fabric">Fábrica:</label>
     <select id="fabric">
-        <option value="">Selecione</option>
-        <option value="UNA">UNA</option>
-        <option value="ICNB">ICNB</option>
-        <option value="NATUPHITUS">NATUPHITUS</option>
-        <option value="NATURELLE">NATURELLE</option>
-        <option value="AERCAMP">AERCAMP</option>
-        <option value="DECOR">DECOR</option>
+      <option value="">Selecione</option>
+      <option value="UNA">UNA</option>
+      <option value="ICNB">ICNB</option>
+      <option value="NATUPHITUS">NATUPHITUS</option>
+      <option value="NATURELLE">NATURELLE</option>
+      <option value="AERCAMP">AERCAMP</option>
+      <option value="DECOR">DECOR</option>
     </select>
 
     <h2>Itens do Pedido</h2>
     <div>
-        <input type="text" id="codigoItem" placeholder="Código do Produto">
-        <input type="text" id="descricaoItem" placeholder="Descrição">
-        <input type="number" id="quantidadeItem" placeholder="Quantidade" value="1" min="1">
-        <button type="button" onclick="adicionarItem()">Adicionar Item</button>
+      <input type="text" id="codigoItem" placeholder="Código do Produto">
+      <input type="text" id="descricaoItem" placeholder="Descrição">
+      <input type="number" id="quantidadeItem" placeholder="Quantidade" value="1" min="1">
+      <button type="button" onclick="adicionarItem()">Adicionar Item</button>
     </div>
 
     <table id="itensTable">
-        <thead>
-            <tr>
-                <th>Código</th>
-                <th>Descrição</th>
-                <th>Quantidade</th>
-                <th>Ações</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
+      <thead>
+        <tr>
+          <th>Código</th>
+          <th>Descrição</th>
+          <th>Quantidade</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
     </table>
 
     <button type="button" onclick="enviarPedido()">Enviar Pedido</button>
-</form>
-</section>
+  </form>
+</div>
 
-<section id="viewSection">
-    <table id="pedidosTable">
-        <thead>
-            <tr>
-                <th>Número do Pedido</th>
-                <th>Fábrica</th>
-                <th>Código do Item</th>
-                <th>Descrição do Item</th>
-                <th>Quantidade do Item</th>
-                <th>Data do Pedido</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr><td colspan="6">Carregando...</td></tr>
-        </tbody>
-    </table>
-</section>
+<!-- ======== ABA VISUALIZAR ======== -->
+<div id="visualizar" class="hidden">
+  <h2>Pedidos Cadastrados</h2>
+  <table id="pedidosTable">
+    <thead>
+      <tr>
+        <th>Número do Pedido</th>
+        <th>Fábrica</th>
+        <th>Código do Item</th>
+        <th>Descrição do Item</th>
+        <th>Quantidade</th>
+        <th>Data do Pedido</th>
+      </tr>
+    </thead>
+    <tbody id="pedidosBody">
+      <tr><td colspan="6">Nenhum pedido encontrado</td></tr>
+    </tbody>
+  </table>
+</div>
 
 <script>
-const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzJOmABpg-yBT3pTYvTY4K9HdHiA2g7yyVC5FbvopPjgUfdudUkpCmzmhybL7MeomjrqQ/exec";
+// ======== CONFIGURAÇÃO ========
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxpxCOBqRiwglnbnrkrPsGBFjsbZloSHhaQeqmnNaO9zH_a3wBIORrZv0eLeYmzCal2zQ/exec";
 
-// Alternar abas
-const btnForm = document.getElementById('btnForm');
-const btnView = document.getElementById('btnView');
-const formSection = document.getElementById('formSection');
-const viewSection = document.getElementById('viewSection');
-btnForm.addEventListener('click', ()=>{ 
-    btnForm.classList.add('active'); 
-    btnView.classList.remove('active'); 
-    formSection.classList.add('active'); 
-    viewSection.classList.remove('active'); 
-});
-btnView.addEventListener('click', ()=>{ 
-    btnView.classList.add('active'); 
-    btnForm.classList.remove('active'); 
-    formSection.classList.remove('active'); 
-    viewSection.classList.add('active'); 
-    carregarPedidos(); 
-});
+// ======== TROCA DE ABAS ========
+function mostrarAba(aba) {
+  document.getElementById('cadastro').classList.add('hidden');
+  document.getElementById('visualizar').classList.add('hidden');
+  document.getElementById(aba).classList.remove('hidden');
+  if (aba === 'visualizar') carregarPedidos();
+}
 
-// Adicionar item
+// ======== ADICIONAR ITEM ========
 function adicionarItem() {
-    const codigo = document.getElementById('codigoItem').value.trim();
-    const descricao = document.getElementById('descricaoItem').value.trim();
-    const quantidade = document.getElementById('quantidadeItem').value.trim();
+  const codigo = document.getElementById('codigoItem').value.trim();
+  const descricao = document.getElementById('descricaoItem').value.trim();
+  const quantidade = document.getElementById('quantidadeItem').value.trim();
 
-    if (!codigo || !descricao || !quantidade) { 
-        alert("Preencha todos os campos do item antes de adicionar."); 
-        return; 
-    }
+  if (!codigo || !descricao || !quantidade) {
+    alert("Preencha todos os campos do item antes de adicionar.");
+    return;
+  }
 
-    const tbody = document.querySelector("#itensTable tbody");
-    const tr = document.createElement("tr");
-    tr.innerHTML = `<td>${codigo}</td><td>${descricao}</td><td>${quantidade}</td><td><button type="button" onclick="removerItem(this)">Remover</button></td>`;
-    tbody.appendChild(tr);
+  const tbody = document.querySelector("#itensTable tbody");
+  const tr = document.createElement("tr");
+  tr.innerHTML = `
+    <td>${codigo}</td>
+    <td>${descricao}</td>
+    <td>${quantidade}</td>
+    <td><button type="button" onclick="removerItem(this)">Remover</button></td>
+  `;
+  tbody.appendChild(tr);
 
-    document.getElementById('codigoItem').value = '';
-    document.getElementById('descricaoItem').value = '';
-    document.getElementById('quantidadeItem').value = 1;
+  document.getElementById('codigoItem').value = '';
+  document.getElementById('descricaoItem').value = '';
+  document.getElementById('quantidadeItem').value = 1;
 }
 
-// Remover item
-function removerItem(btn) { btn.closest('tr').remove(); }
+function removerItem(btn) {
+  btn.closest('tr').remove();
+}
 
-// Enviar pedido
+// ======== ENVIAR PEDIDO ========
 async function enviarPedido() {
-    const numero = document.getElementById('numeroPedido').value.trim();
-    const fabrica = document.getElementById('fabric').value;
-    const rows = document.querySelectorAll("#itensTable tbody tr");
+  const numero = document.getElementById('numeroPedido').value.trim();
+  const fabrica = document.getElementById('fabric').value;
+  const rows = document.querySelectorAll("#itensTable tbody tr");
 
-    if (!numero || !fabrica) { 
-        alert("Preencha o número do pedido e a fábrica."); 
-        return; 
+  if (!numero || !fabrica) {
+    alert("Preencha o número do pedido e a fábrica.");
+    return;
+  }
+
+  if (rows.length === 0) {
+    alert("Adicione ao menos um item ao pedido.");
+    return;
+  }
+
+  const itens = Array.from(rows).map(row => ({
+    codigo: row.cells[0].innerText,
+    descricao: row.cells[1].innerText,
+    quantidade: Number(row.cells[2].innerText)
+  }));
+
+  const pedido = { numero, fabrica, itens };
+
+  try {
+    const response = await fetch(WEB_APP_URL, {
+      method: "POST",
+      body: JSON.stringify(pedido)
+    });
+    const result = await response.json();
+    if (result.status === "success") {
+      alert("Pedido enviado com sucesso!");
+      document.getElementById('pedidoForm').reset();
+      document.querySelector("#itensTable tbody").innerHTML = '';
+    } else {
+      alert("Erro: " + result.message);
     }
-    if (rows.length === 0) { 
-        alert("Adicione ao menos um item ao pedido."); 
-        return; 
-    }
-
-    const itens = Array.from(rows).map(r => ({
-        codigo: r.cells[0].innerText,
-        descricao: r.cells[1].innerText,
-        quantidade: Number(r.cells[2].innerText)
-    }));
-
-    const pedido = { numero, fabrica, itens };
-
-    try {
-        const res = await fetch(WEB_APP_URL, { 
-            method:"POST", 
-            body: JSON.stringify(pedido),
-            headers: { 'Content-Type': 'application/json' }
-        });
-        const result = await res.json();
-        if(result.status==="success"){ 
-            alert("Pedido enviado com sucesso!"); 
-            document.getElementById('pedidoForm').reset(); 
-            document.querySelector("#itensTable tbody").innerHTML=''; 
-        } 
-        else { alert("Erro: "+result.message); }
-    } catch(err) { 
-        console.error(err); 
-        alert("Erro de conexão."); 
-    }
+  } catch (err) {
+    alert("Erro de conexão com o servidor.");
+  }
 }
 
-// Carregar pedidos
+// ======== CARREGAR PEDIDOS ========
 async function carregarPedidos() {
-    const tbody = document.querySelector("#pedidosTable tbody");
-    tbody.innerHTML = "<tr><td colspan='6'>Carregando...</td></tr>";
+  const tbody = document.getElementById("pedidosBody");
+  tbody.innerHTML = `<tr><td colspan="6">Carregando...</td></tr>`;
 
-    try {
-        const res = await fetch(WEB_APP_URL+"?action=get");
-        const data = await res.json();
-        if(!data.length){ 
-            tbody.innerHTML="<tr><td colspan='6'>Nenhum pedido encontrado</td></tr>"; 
-            return; 
-        }
+  try {
+    const res = await fetch(WEB_APP_URL + "?action=get");
+    const pedidos = await res.json();
 
-        tbody.innerHTML = "";
-        data.forEach(r=>{
-            const tr = document.createElement("tr");
-            tr.innerHTML = `
-                <td>${r.numero}</td>
-                <td>${r.fabrica}</td>
-                <td>${r.codigo}</td>
-                <td>${r.descricao}</td>
-                <td>${r.quantidade}</td>
-                <td>${r.dataPedido}</td>
-            `;
-            tbody.appendChild(tr);
-        });
-    } catch(err){ 
-        console.error(err); 
-        tbody.innerHTML="<tr><td colspan='6'>Erro ao carregar pedidos</td></tr>"; 
+    if (pedidos.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="6">Nenhum pedido encontrado</td></tr>`;
+      return;
     }
+
+    tbody.innerHTML = "";
+    pedidos.forEach(p => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${p.numero}</td>
+        <td>${p.fabrica}</td>
+        <td>${p.codigo}</td>
+        <td>${p.descricao}</td>
+        <td>${p.quantidade}</td>
+        <td>${p.dataPedido}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  } catch (err) {
+    tbody.innerHTML = `<tr><td colspan="6">Erro ao carregar pedidos</td></tr>`;
+  }
 }
 </script>
 
