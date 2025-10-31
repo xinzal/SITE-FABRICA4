@@ -3,233 +3,212 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cadastro de Pedidos</title>
+<title>Solicitar Pedido</title>
 <style>
-    body {
-        font-family: Arial, sans-serif;
-        margin: 0;
-        padding: 0;
-        background-color: #f4f4f4;
-    }
-    header {
-        background-color: #003c8f;
-        color: white;
-        text-align: center;
-        padding: 15px;
-        font-size: 22px;
-    }
-    main {
-        padding: 20px;
-        max-width: 900px;
-        margin: auto;
-        background-color: white;
-        border-radius: 8px;
-        box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-    input, select {
-        padding: 8px;
-        margin: 5px 0;
-        width: 100%;
-        box-sizing: border-box;
-    }
-    button {
-        background-color: #003c8f;
-        color: white;
-        border: none;
-        padding: 10px 15px;
-        margin-top: 10px;
-        border-radius: 6px;
-        cursor: pointer;
-    }
-    button:hover {
-        background-color: #0055c9;
-    }
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 20px;
-    }
-    table th, table td {
-        border: 1px solid #ddd;
-        padding: 8px;
-        text-align: center;
-    }
-    table th {
-        background-color: #003c8f;
-        color: white;
-    }
-    .tabs {
-        display: flex;
-        justify-content: center;
-        margin-bottom: 15px;
-    }
-    .tab {
-        padding: 10px 20px;
-        cursor: pointer;
-        background: #ddd;
-        border-radius: 6px 6px 0 0;
-        margin-right: 5px;
-    }
-    .tab.active {
-        background: white;
-        border-bottom: 2px solid white;
-        color: #003c8f;
-        font-weight: bold;
-    }
-    .tab-content {
-        display: none;
-    }
-    .tab-content.active {
-        display: block;
-    }
+    body { font-family: Arial, sans-serif; background-color: #f2f4f8; padding: 20px; }
+    h1 { color: #003c8f; margin-bottom: 20px; }
+    label { display: block; margin-top: 15px; font-weight: bold; }
+    input, select { width: 100%; padding: 8px; margin-top: 5px; box-sizing: border-box; }
+    button { padding: 8px 15px; margin-top: 15px; background-color: #0073c9; color: white; border: none; cursor: pointer; border-radius: 4px; }
+    button:hover { background-color: #005fa3; }
+    table { width: 100%; border-collapse: collapse; margin-top: 15px; background-color: #fff; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+    th { background-color: #0073c9; color: white; }
+    td button { background-color: #c0392b; }
+    td button:hover { background-color: #922b21; }
+    nav { margin-bottom: 20px; }
+    nav button { margin-right: 10px; }
+    section { display: none; }
+    section.active { display: block; }
 </style>
 </head>
 <body>
-<header>Cadastro de Pedidos</header>
 
-<main>
-    <div class="tabs">
-        <div class="tab active" onclick="openTab('cadastro')">Cadastrar Pedido</div>
-        <div class="tab" onclick="openTab('visualizar')">Visualizar Pedidos</div>
+<h1>Solicitar Pedido</h1>
+
+<nav>
+    <button id="btnForm" class="active">Cadastrar Pedido</button>
+    <button id="btnView">Visualizar Pedidos</button>
+</nav>
+
+<section id="formSection" class="active">
+<form id="pedidoForm">
+    <label for="numeroPedido">Número do Pedido:</label>
+    <input type="text" id="numeroPedido">
+
+    <label for="fabric">Fábrica:</label>
+    <select id="fabric">
+        <option value="">Selecione</option>
+        <option value="UNA">UNA</option>
+        <option value="ICNB">ICNB</option>
+        <option value="NATUPHITUS">NATUPHITUS</option>
+        <option value="NATURELLE">NATURELLE</option>
+        <option value="AERCAMP">AERCAMP</option>
+        <option value="DECOR">DECOR</option>
+    </select>
+
+    <h2>Itens do Pedido</h2>
+    <div>
+        <input type="text" id="codigoItem" placeholder="Código do Produto">
+        <input type="text" id="descricaoItem" placeholder="Descrição">
+        <input type="number" id="quantidadeItem" placeholder="Quantidade" value="1" min="1">
+        <button type="button" onclick="adicionarItem()">Adicionar Item</button>
     </div>
 
-    <!-- ====== CADASTRO ====== -->
-    <div id="cadastro" class="tab-content active">
-        <h3>Dados do Pedido</h3>
-        <label>Número do Pedido:</label>
-        <input type="text" id="numeroPedido">
+    <table id="itensTable">
+        <thead>
+            <tr>
+                <th>Código</th>
+                <th>Descrição</th>
+                <th>Quantidade</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
 
-        <label>Fábrica de destino:</label>
-        <input type="text" id="fabrica">
+    <button type="button" onclick="enviarPedido()">Enviar Pedido</button>
+</form>
+</section>
 
-        <h4>Itens do Pedido</h4>
-        <div id="itensContainer">
-            <div class="item">
-                <label>Código do Produto:</label>
-                <input type="text" class="codigo">
-                <label>Descrição:</label>
-                <input type="text" class="descricao">
-                <label>Quantidade:</label>
-                <input type="number" class="quantidade" min="1" value="1">
-            </div>
-        </div>
-
-        <button type="button" onclick="adicionarItem()">+ Adicionar Item</button><br>
-        <button type="button" onclick="enviarPedido()">Enviar Pedido</button>
-    </div>
-
-    <!-- ====== VISUALIZAR ====== -->
-    <div id="visualizar" class="tab-content">
-        <h3>Pedidos Cadastrados</h3>
-        <button onclick="carregarPedidos()">🔄 Atualizar Lista</button>
-        <table id="tabelaPedidos">
-            <thead>
-                <tr>
-                    <th>Número</th>
-                    <th>Fábrica</th>
-                    <th>Código</th>
-                    <th>Descrição</th>
-                    <th>Quantidade</th>
-                    <th>Data</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
-    </div>
-</main>
+<section id="viewSection">
+    <table id="pedidosTable">
+        <thead>
+            <tr>
+                <th>Número do Pedido</th>
+                <th>Fábrica</th>
+                <th>Código do Item</th>
+                <th>Descrição do Item</th>
+                <th>Quantidade do Item</th>
+                <th>Data do Pedido</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td colspan="6">Carregando...</td></tr>
+        </tbody>
+    </table>
+</section>
 
 <script>
 const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzJOmABpg-yBT3pTYvTY4K9HdHiA2g7yyVC5FbvopPjgUfdudUkpCmzmhybL7MeomjrqQ/exec";
 
-function openTab(tabName) {
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active'));
-    document.querySelector(`.tab[onclick="openTab('${tabName}')"]`).classList.add('active');
-    document.getElementById(tabName).classList.add('active');
-}
+// Alternar abas
+const btnForm = document.getElementById('btnForm');
+const btnView = document.getElementById('btnView');
+const formSection = document.getElementById('formSection');
+const viewSection = document.getElementById('viewSection');
+btnForm.addEventListener('click', ()=>{ 
+    btnForm.classList.add('active'); 
+    btnView.classList.remove('active'); 
+    formSection.classList.add('active'); 
+    viewSection.classList.remove('active'); 
+});
+btnView.addEventListener('click', ()=>{ 
+    btnView.classList.add('active'); 
+    btnForm.classList.remove('active'); 
+    formSection.classList.remove('active'); 
+    viewSection.classList.add('active'); 
+    carregarPedidos(); 
+});
 
+// Adicionar item
 function adicionarItem() {
-    const container = document.getElementById('itensContainer');
-    const item = document.createElement('div');
-    item.classList.add('item');
-    item.innerHTML = `
-        <label>Código do Produto:</label>
-        <input type="text" class="codigo">
-        <label>Descrição:</label>
-        <input type="text" class="descricao">
-        <label>Quantidade:</label>
-        <input type="number" class="quantidade" min="1" value="1">
-    `;
-    container.appendChild(item);
+    const codigo = document.getElementById('codigoItem').value.trim();
+    const descricao = document.getElementById('descricaoItem').value.trim();
+    const quantidade = document.getElementById('quantidadeItem').value.trim();
+
+    if (!codigo || !descricao || !quantidade) { 
+        alert("Preencha todos os campos do item antes de adicionar."); 
+        return; 
+    }
+
+    const tbody = document.querySelector("#itensTable tbody");
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<td>${codigo}</td><td>${descricao}</td><td>${quantidade}</td><td><button type="button" onclick="removerItem(this)">Remover</button></td>`;
+    tbody.appendChild(tr);
+
+    document.getElementById('codigoItem').value = '';
+    document.getElementById('descricaoItem').value = '';
+    document.getElementById('quantidadeItem').value = 1;
 }
 
+// Remover item
+function removerItem(btn) { btn.closest('tr').remove(); }
+
+// Enviar pedido
 async function enviarPedido() {
     const numero = document.getElementById('numeroPedido').value.trim();
-    const fabrica = document.getElementById('fabrica').value.trim();
+    const fabrica = document.getElementById('fabric').value;
+    const rows = document.querySelectorAll("#itensTable tbody tr");
 
-    if (!numero || !fabrica) {
-        alert("Preencha o número do pedido e a fábrica.");
-        return;
+    if (!numero || !fabrica) { 
+        alert("Preencha o número do pedido e a fábrica."); 
+        return; 
+    }
+    if (rows.length === 0) { 
+        alert("Adicione ao menos um item ao pedido."); 
+        return; 
     }
 
-    const itens = Array.from(document.querySelectorAll('#itensContainer .item')).map(div => ({
-        codigo: div.querySelector('.codigo').value.trim(),
-        descricao: div.querySelector('.descricao').value.trim(),
-        quantidade: div.querySelector('.quantidade').value.trim()
-    })).filter(i => i.codigo || i.descricao);
+    const itens = Array.from(rows).map(r => ({
+        codigo: r.cells[0].innerText,
+        descricao: r.cells[1].innerText,
+        quantidade: Number(r.cells[2].innerText)
+    }));
 
-    if (itens.length === 0) {
-        alert("Adicione ao menos um item.");
-        return;
-    }
-
-    const dados = { numero, fabrica, itens };
+    const pedido = { numero, fabrica, itens };
 
     try {
-        const res = await fetch(WEB_APP_URL, {
-            method: 'POST',
-            body: JSON.stringify(dados),
+        const res = await fetch(WEB_APP_URL, { 
+            method:"POST", 
+            body: JSON.stringify(pedido),
             headers: { 'Content-Type': 'application/json' }
         });
         const result = await res.json();
-
-        if (result.status === "success") {
-            alert("Pedido cadastrado com sucesso!");
-            document.getElementById('numeroPedido').value = "";
-            document.getElementById('fabrica').value = "";
-            document.getElementById('itensContainer').innerHTML = "";
-            adicionarItem();
-        } else {
-            alert("Erro: " + result.message);
-        }
-    } catch (err) {
-        alert("Erro na conexão: " + err.message);
+        if(result.status==="success"){ 
+            alert("Pedido enviado com sucesso!"); 
+            document.getElementById('pedidoForm').reset(); 
+            document.querySelector("#itensTable tbody").innerHTML=''; 
+        } 
+        else { alert("Erro: "+result.message); }
+    } catch(err) { 
+        console.error(err); 
+        alert("Erro de conexão."); 
     }
 }
 
+// Carregar pedidos
 async function carregarPedidos() {
-    try {
-        const res = await fetch(WEB_APP_URL + "?action=get");
-        const data = await res.json();
-        const tbody = document.querySelector("#tabelaPedidos tbody");
-        tbody.innerHTML = "";
+    const tbody = document.querySelector("#pedidosTable tbody");
+    tbody.innerHTML = "<tr><td colspan='6'>Carregando...</td></tr>";
 
-        data.forEach(p => {
-            const row = document.createElement("tr");
-            row.innerHTML = `
-                <td>${p.numero || ""}</td>
-                <td>${p.fabrica || ""}</td>
-                <td>${p.codigo || ""}</td>
-                <td>${p.descricao || ""}</td>
-                <td>${p.quantidade || ""}</td>
-                <td>${p.dataPedido || ""}</td>
+    try {
+        const res = await fetch(WEB_APP_URL+"?action=get");
+        const data = await res.json();
+        if(!data.length){ 
+            tbody.innerHTML="<tr><td colspan='6'>Nenhum pedido encontrado</td></tr>"; 
+            return; 
+        }
+
+        tbody.innerHTML = "";
+        data.forEach(r=>{
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+                <td>${r.numero}</td>
+                <td>${r.fabrica}</td>
+                <td>${r.codigo}</td>
+                <td>${r.descricao}</td>
+                <td>${r.quantidade}</td>
+                <td>${r.dataPedido}</td>
             `;
-            tbody.appendChild(row);
+            tbody.appendChild(tr);
         });
-    } catch (err) {
-        alert("Erro ao carregar pedidos: " + err.message);
+    } catch(err){ 
+        console.error(err); 
+        tbody.innerHTML="<tr><td colspan='6'>Erro ao carregar pedidos</td></tr>"; 
     }
 }
 </script>
+
 </body>
 </html>
