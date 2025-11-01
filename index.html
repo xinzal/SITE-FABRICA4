@@ -1,41 +1,296 @@
-function filtrarPedidos() {
-  const filtroNumero = document.getElementById('filtroPedido').value.toLowerCase();
-  const filtroFabrica = document.getElementById('filtroFabrica').value;
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solicitar Pedido</title>
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f2f4f8;
+        padding: 20px;
+        color: #333;
+    }
 
-  const filtrados = [];
+    h1 {
+        color: #003c8f;
+        margin-bottom: 20px;
+        text-align: center;
+    }
 
-  pedidosCache.forEach(pedido => {
-    // Cada pedido tem uma lista de itens
-    pedido.itens.forEach(item => {
-      const numeroMatch = !filtroNumero || pedido.numero.toLowerCase().includes(filtroNumero);
-      const fabricaMatch = !filtroFabrica || pedido.fabrica === filtroFabrica;
-      if (numeroMatch && fabricaMatch) {
-        filtrados.push({
-          numero: pedido.numero,
-          fabrica: pedido.fabrica,
-          codigo: item.codigo,
-          descricao: item.descricao,
-          quantidade: item.quantidade,
-          dataPedido: pedido.dataPedido
-        });
-      }
-    });
-  });
+    label {
+        display: block;
+        margin-top: 15px;
+        font-weight: 600;
+    }
 
-  renderizarPedidos(filtrados);
+    input, select {
+        width: 100%;
+        padding: 10px;
+        margin-top: 5px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        box-sizing: border-box;
+        font-size: 14px;
+    }
+
+    button {
+        padding: 10px 20px;
+        margin-top: 15px;
+        background-color: #0073c9;
+        color: white;
+        border: none;
+        cursor: pointer;
+        border-radius: 5px;
+        font-weight: bold;
+        transition: all 0.3s ease;
+    }
+
+    button:hover {
+        background-color: #005fa3;
+        transform: translateY(-2px);
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+        background-color: #fff;
+        box-shadow: 0px 2px 5px rgba(0,0,0,0.1);
+    }
+
+    th, td {
+        border: 1px solid #ccc;
+        padding: 10px;
+        text-align: left;
+    }
+
+    th {
+        background-color: #0073c9;
+        color: white;
+    }
+
+    .hidden { display: none; }
+
+    .tabs {
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    .tabs button {
+        margin-right: 10px;
+        border-radius: 20px;
+        padding: 8px 18px;
+        background-color: #e1e6ed;
+        color: #003c8f;
+    }
+
+    .tabs button:hover {
+        background-color: #cfd9e7;
+    }
+
+    /* Filtro e pesquisa */
+    .filtros {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 10px;
+        flex-wrap: wrap;
+    }
+
+    .filtros select, .filtros input {
+        flex: 1;
+    }
+
+</style>
+</head>
+<body>
+
+<h1>Solicitar Pedido</h1>
+
+<div class="tabs">
+    <button onclick="mostrarAba('cadastro')">Cadastrar Pedido</button>
+    <button onclick="mostrarAba('visualizar')">Visualizar Pedidos</button>
+</div>
+
+<!-- ======== ABA CADASTRO ======== -->
+<div id="cadastro">
+    <form id="pedidoForm">
+        <label for="numeroPedido">Número do Pedido:</label>
+        <input type="text" id="numeroPedido">
+
+        <label for="fabric">Fábrica:</label>
+        <select id="fabric">
+            <option value="">Selecione</option>
+            <option value="UNA">UNA</option>
+            <option value="ICNB">ICNB</option>
+            <option value="NATUPHITUS">NATUPHITUS</option>
+            <option value="NATURELLE">NATURELLE</option>
+            <option value="AERCAMP">AERCAMP</option>
+            <option value="DECOR">DECOR</option>
+        </select>
+
+        <h2>Itens do Pedido</h2>
+        <div>
+            <input type="text" id="codigoItem" placeholder="Código do Produto">
+            <input type="text" id="descricaoItem" placeholder="Descrição">
+            <input type="number" id="quantidadeItem" placeholder="Quantidade" value="1" min="1">
+            <button type="button" onclick="adicionarItem()">Adicionar Item</button>
+        </div>
+
+        <table id="itensTable">
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Descrição</th>
+                    <th>Quantidade</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+
+        <button type="button" onclick="enviarPedido()">Enviar Pedido</button>
+    </form>
+</div>
+
+<!-- ======== ABA VISUALIZAR ======== -->
+<div id="visualizar" class="hidden">
+    <h2>Pedidos Cadastrados</h2>
+
+    <div class="filtros">
+        <select id="filtroFabrica" onchange="filtrarPedidos()">
+            <option value="">Todas as Fábricas</option>
+            <option value="UNA">UNA</option>
+            <option value="ICNB">ICNB</option>
+            <option value="NATUPHITUS">NATUPHITUS</option>
+            <option value="NATURELLE">NATURELLE</option>
+            <option value="AERCAMP">AERCAMP</option>
+            <option value="DECOR">DECOR</option>
+        </select>
+        <input type="text" id="filtroNumero" placeholder="Pesquisar por Número do Pedido" oninput="filtrarPedidos()">
+    </div>
+
+    <table id="pedidosTable">
+        <thead>
+            <tr>
+                <th>Número do Pedido</th>
+                <th>Fábrica</th>
+                <th>Código do Item</th>
+                <th>Descrição do Item</th>
+                <th>Quantidade</th>
+                <th>Data do Pedido</th>
+            </tr>
+        </thead>
+        <tbody id="pedidosBody">
+            <tr><td colspan="6">Nenhum pedido encontrado</td></tr>
+        </tbody>
+    </table>
+</div>
+
+<script>
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbx4mVZMdyDF3qie-OlmI1DMWfTNuB7k_dYUZxAWxGzV_LSH1lKbYF8Vi5p4mwJFkjLZsQ/exec";
+
+// Troca de abas
+function mostrarAba(aba) {
+    document.getElementById('cadastro').classList.add('hidden');
+    document.getElementById('visualizar').classList.add('hidden');
+    document.getElementById(aba).classList.remove('hidden');
+    if (aba === 'visualizar') carregarPedidos();
 }
 
-function renderizarPedidos(pedidos) {
-  const tbody = document.getElementById("pedidosBody");
-  tbody.innerHTML = "";
-  if (pedidos.length === 0) { 
-    tbody.innerHTML = `<tr><td colspan="6">Nenhum pedido encontrado</td></tr>`; 
-    return; 
-  }
-
-  pedidos.forEach(p => {
+// Adicionar Item
+function adicionarItem() {
+    const codigo = document.getElementById('codigoItem').value.trim();
+    const descricao = document.getElementById('descricaoItem').value.trim();
+    const quantidade = document.getElementById('quantidadeItem').value.trim();
+    if (!codigo || !descricao || !quantidade) {
+        alert("Preencha todos os campos do item antes de adicionar.");
+        return;
+    }
+    const tbody = document.querySelector("#itensTable tbody");
     const tr = document.createElement("tr");
-    tr.innerHTML = `<td>${p.numero}</td><td>${p.fabrica}</td><td>${p.codigo}</td><td>${p.descricao}</td><td>${p.quantidade}</td><td>${p.dataPedido}</td>`;
+    tr.innerHTML = `<td>${codigo}</td><td>${descricao}</td><td>${quantidade}</td>
+                    <td><button type="button" onclick="removerItem(this)">Remover</button></td>`;
     tbody.appendChild(tr);
-  });
+    document.getElementById('codigoItem').value = '';
+    document.getElementById('descricaoItem').value = '';
+    document.getElementById('quantidadeItem').value = 1;
 }
+
+function removerItem(btn) {
+    btn.closest('tr').remove();
+}
+
+// Enviar Pedido
+async function enviarPedido() {
+    const numero = document.getElementById('numeroPedido').value.trim();
+    const fabrica = document.getElementById('fabric').value;
+    const rows = document.querySelectorAll("#itensTable tbody tr");
+    if (!numero || !fabrica) {
+        alert("Preencha o número do pedido e a fábrica.");
+        return;
+    }
+    if (rows.length === 0) {
+        alert("Adicione ao menos um item ao pedido.");
+        return;
+    }
+    const itens = Array.from(rows).map(row => ({
+        codigo: row.cells[0].innerText,
+        descricao: row.cells[1].innerText,
+        quantidade: Number(row.cells[2].innerText)
+    }));
+    const pedido = { numero, fabrica, itens };
+    try {
+        const response = await fetch(WEB_APP_URL, { method: "POST", body: JSON.stringify(pedido) });
+        const result = await response.json();
+        if (result.status === "success") {
+            alert("Pedido enviado com sucesso!");
+            document.getElementById('pedidoForm').reset();
+            document.querySelector("#itensTable tbody").innerHTML = '';
+        } else {
+            alert("Erro: " + result.message);
+        }
+    } catch (err) {
+        alert("Erro de conexão com o servidor.");
+    }
+}
+
+// Carregar Pedidos
+let pedidosCache = [];
+async function carregarPedidos() {
+    const tbody = document.getElementById("pedidosBody");
+    tbody.innerHTML = `<tr><td colspan="6">Carregando...</td></tr>`;
+    try {
+        const res = await fetch(WEB_APP_URL + "?action=get");
+        const pedidos = await res.json();
+        pedidosCache = pedidos;
+        filtrarPedidos();
+    } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="6">Erro ao carregar pedidos</td></tr>`;
+    }
+}
+
+// Filtrar Pedidos
+function filtrarPedidos() {
+    const filtroNumero = document.getElementById('filtroNumero').value.toLowerCase();
+    const filtroFabrica = document.getElementById('filtroFabrica').value;
+    const tbody = document.getElementById("pedidosBody");
+    let filtrados = pedidosCache.filter(p => 
+        (filtroNumero === '' || p.numero.toLowerCase().includes(filtroNumero)) &&
+        (filtroFabrica === '' || p.fabrica === filtroFabrica)
+    );
+    tbody.innerHTML = '';
+    if(filtrados.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6">Nenhum pedido encontrado</td></tr>`;
+        return;
+    }
+    filtrados.forEach(p => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `<td>${p.numero}</td><td>${p.fabrica}</td><td>${p.codigo}</td><td>${p.descricao}</td><td>${p.quantidade}</td><td>${p.dataPedido}</td>`;
+        tbody.appendChild(tr);
+    });
+}
+</script>
+
+</body>
+</html>
