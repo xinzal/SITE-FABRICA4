@@ -5,18 +5,91 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Solicitar Pedido</title>
 <style>
-  body { font-family: Arial, sans-serif; background-color: #f2f4f8; padding: 20px; }
-  h1 { color: #003c8f; margin-bottom: 20px; }
-  label { display: block; margin-top: 15px; font-weight: bold; }
-  input, select { width: 100%; padding: 8px; margin-top: 5px; box-sizing: border-box; }
-  button { padding: 8px 15px; margin-top: 15px; background-color: #0073c9; color: white; border: none; cursor: pointer; border-radius: 4px; }
-  button:hover { background-color: #005fa3; }
-  table { width: 100%; border-collapse: collapse; margin-top: 15px; background-color: #fff; }
-  th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
-  th { background-color: #0073c9; color: white; }
-  .hidden { display: none; }
+  /* ===== Corpo e Tipografia ===== */
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f4f6fb;
+    padding: 20px;
+    color: #333;
+  }
+  h1 {
+    color: #1a3e72;
+    margin-bottom: 20px;
+  }
+  h2 {
+    color: #1a3e72;
+    margin-top: 20px;
+  }
+
+  /* ===== Labels e Inputs ===== */
+  label { display: block; margin-top: 15px; font-weight: 600; }
+  input, select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    box-sizing: border-box;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    transition: 0.2s;
+  }
+  input:focus, select:focus { border-color: #1a3e72; outline: none; }
+
+  /* ===== Botões ===== */
+  button {
+    padding: 10px 20px;
+    margin-top: 15px;
+    background-color: #1a3e72;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: 0.2s;
+  }
+  button:hover { background-color: #16325a; }
+
+  /* ===== Tabelas ===== */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    background-color: #fff;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  }
+  th, td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+  }
+  th {
+    background-color: #1a3e72;
+    color: #fff;
+    font-weight: 600;
+  }
+
+  /* ===== Tabs ===== */
   .tabs { margin-bottom: 20px; }
-  .tabs button { margin-right: 10px; }
+  .tabs button {
+    margin-right: 10px;
+    background-color: #e0e4eb;
+    color: #1a3e72;
+  }
+  .tabs button.active {
+    background-color: #1a3e72;
+    color: #fff;
+  }
+
+  .hidden { display: none; }
+
+  /* ===== Filtros ===== */
+  .filtro-container {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+  }
+  .filtro-container input, .filtro-container select {
+    flex: 1;
+  }
 </style>
 </head>
 <body>
@@ -24,11 +97,11 @@
 <h1>Solicitar Pedido</h1>
 
 <div class="tabs">
-  <button onclick="mostrarAba('cadastro')">Cadastrar Pedido</button>
-  <button onclick="mostrarAba('visualizar')">Visualizar Pedidos</button>
+  <button id="tabCadastro" class="active" onclick="mostrarAba('cadastro')">Cadastrar Pedido</button>
+  <button id="tabVisualizar" onclick="mostrarAba('visualizar')">Visualizar Pedidos</button>
 </div>
 
-<!-- ======== ABA CADASTRO ======== -->
+<!-- ===== ABA CADASTRO ===== -->
 <div id="cadastro">
   <form id="pedidoForm">
     <label for="numeroPedido">Número do Pedido:</label>
@@ -69,9 +142,23 @@
   </form>
 </div>
 
-<!-- ======== ABA VISUALIZAR ======== -->
+<!-- ===== ABA VISUALIZAR ===== -->
 <div id="visualizar" class="hidden">
   <h2>Pedidos Cadastrados</h2>
+
+  <div class="filtro-container">
+    <input type="text" id="filtroPedido" placeholder="Pesquisar por número do pedido" onkeyup="filtrarPedidos()">
+    <select id="filtroFabrica" onchange="filtrarPedidos()">
+      <option value="">Filtrar por Fábrica</option>
+      <option value="UNA">UNA</option>
+      <option value="ICNB">ICNB</option>
+      <option value="NATUPHITUS">NATUPHITUS</option>
+      <option value="NATURELLE">NATURELLE</option>
+      <option value="AERCAMP">AERCAMP</option>
+      <option value="DECOR">DECOR</option>
+    </select>
+  </div>
+
   <table id="pedidosTable">
     <thead>
       <tr>
@@ -90,36 +177,32 @@
 </div>
 
 <script>
-// ======== CONFIGURAÇÃO ========
 const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbx4mVZMdyDF3qie-OlmI1DMWfTNuB7k_dYUZxAWxGzV_LSH1lKbYF8Vi5p4mwJFkjLZsQ/exec";
 
-// ======== TROCA DE ABAS ========
+// ===== TROCA DE ABAS =====
 function mostrarAba(aba) {
   document.getElementById('cadastro').classList.add('hidden');
   document.getElementById('visualizar').classList.add('hidden');
+  document.getElementById('tabCadastro').classList.remove('active');
+  document.getElementById('tabVisualizar').classList.remove('active');
+
   document.getElementById(aba).classList.remove('hidden');
   if (aba === 'visualizar') carregarPedidos();
+  if (aba === 'cadastro') document.getElementById('tabCadastro').classList.add('active');
+  else document.getElementById('tabVisualizar').classList.add('active');
 }
 
-// ======== ADICIONAR ITEM ========
+// ===== ADICIONAR ITEM =====
 function adicionarItem() {
   const codigo = document.getElementById('codigoItem').value.trim();
   const descricao = document.getElementById('descricaoItem').value.trim();
   const quantidade = document.getElementById('quantidadeItem').value.trim();
 
-  if (!codigo || !descricao || !quantidade) {
-    alert("Preencha todos os campos do item antes de adicionar.");
-    return;
-  }
+  if (!codigo || !descricao || !quantidade) { alert("Preencha todos os campos do item."); return; }
 
   const tbody = document.querySelector("#itensTable tbody");
   const tr = document.createElement("tr");
-  tr.innerHTML = `
-    <td>${codigo}</td>
-    <td>${descricao}</td>
-    <td>${quantidade}</td>
-    <td><button type="button" onclick="removerItem(this)">Remover</button></td>
-  `;
+  tr.innerHTML = `<td>${codigo}</td><td>${descricao}</td><td>${quantidade}</td><td><button type="button" onclick="removerItem(this)">Remover</button></td>`;
   tbody.appendChild(tr);
 
   document.getElementById('codigoItem').value = '';
@@ -127,25 +210,16 @@ function adicionarItem() {
   document.getElementById('quantidadeItem').value = 1;
 }
 
-function removerItem(btn) {
-  btn.closest('tr').remove();
-}
+function removerItem(btn) { btn.closest('tr').remove(); }
 
-// ======== ENVIAR PEDIDO ========
+// ===== ENVIAR PEDIDO =====
 async function enviarPedido() {
   const numero = document.getElementById('numeroPedido').value.trim();
   const fabrica = document.getElementById('fabric').value;
   const rows = document.querySelectorAll("#itensTable tbody tr");
 
-  if (!numero || !fabrica) {
-    alert("Preencha o número do pedido e a fábrica.");
-    return;
-  }
-
-  if (rows.length === 0) {
-    alert("Adicione ao menos um item ao pedido.");
-    return;
-  }
+  if (!numero || !fabrica) { alert("Preencha o número do pedido e a fábrica."); return; }
+  if (rows.length === 0) { alert("Adicione ao menos um item."); return; }
 
   const itens = Array.from(rows).map(row => ({
     codigo: row.cells[0].innerText,
@@ -156,10 +230,7 @@ async function enviarPedido() {
   const pedido = { numero, fabrica, itens };
 
   try {
-    const response = await fetch(WEB_APP_URL, {
-      method: "POST",
-      body: JSON.stringify(pedido)
-    });
+    const response = await fetch(WEB_APP_URL, { method: "POST", body: JSON.stringify(pedido) });
     const result = await response.json();
     if (result.status === "success") {
       alert("Pedido enviado com sucesso!");
@@ -168,12 +239,11 @@ async function enviarPedido() {
     } else {
       alert("Erro: " + result.message);
     }
-  } catch (err) {
-    alert("Erro de conexão com o servidor.");
-  }
+  } catch (err) { alert("Erro de conexão com o servidor."); }
 }
 
-// ======== CARREGAR PEDIDOS ========
+// ===== CARREGAR PEDIDOS =====
+let pedidosCache = [];
 async function carregarPedidos() {
   const tbody = document.getElementById("pedidosBody");
   tbody.innerHTML = `<tr><td colspan="6">Carregando...</td></tr>`;
@@ -181,30 +251,38 @@ async function carregarPedidos() {
   try {
     const res = await fetch(WEB_APP_URL + "?action=get");
     const pedidos = await res.json();
+    pedidosCache = pedidos;
 
-    if (pedidos.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="6">Nenhum pedido encontrado</td></tr>`;
-      return;
-    }
+    if (pedidos.length === 0) { tbody.innerHTML = `<tr><td colspan="6">Nenhum pedido encontrado</td></tr>`; return; }
 
-    tbody.innerHTML = "";
-    pedidos.forEach(p => {
-      const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td>${p.numero}</td>
-        <td>${p.fabrica}</td>
-        <td>${p.codigo}</td>
-        <td>${p.descricao}</td>
-        <td>${p.quantidade}</td>
-        <td>${p.dataPedido}</td>
-      `;
-      tbody.appendChild(tr);
-    });
-  } catch (err) {
-    tbody.innerHTML = `<tr><td colspan="6">Erro ao carregar pedidos</td></tr>`;
-  }
+    renderizarPedidos(pedidos);
+  } catch (err) { tbody.innerHTML = `<tr><td colspan="6">Erro ao carregar pedidos</td></tr>`; }
+}
+
+// ===== FILTROS =====
+function filtrarPedidos() {
+  const filtroNumero = document.getElementById('filtroPedido').value.toLowerCase();
+  const filtroFabrica = document.getElementById('filtroFabrica').value;
+
+  const filtrados = pedidosCache.filter(p => {
+    return (!filtroNumero || p.numero.toLowerCase().includes(filtroNumero)) &&
+           (!filtroFabrica || p.fabrica === filtroFabrica);
+  });
+
+  renderizarPedidos(filtrados);
+}
+
+function renderizarPedidos(pedidos) {
+  const tbody = document.getElementById("pedidosBody");
+  tbody.innerHTML = "";
+  if (pedidos.length === 0) { tbody.innerHTML = `<tr><td colspan="6">Nenhum pedido encontrado</td></tr>`; return; }
+
+  pedidos.forEach(p => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<td>${p.numero}</td><td>${p.fabrica}</td><td>${p.codigo}</td><td>${p.descricao}</td><td>${p.quantidade}</td><td>${p.dataPedido}</td>`;
+    tbody.appendChild(tr);
+  });
 }
 </script>
-
 </body>
 </html>
