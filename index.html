@@ -5,102 +5,124 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Solicitar Pedido</title>
 <style>
-    body {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background-color: #f2f4f8;
-        padding: 20px;
-        color: #333;
-    }
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f7fa;
+    margin: 0;
+    padding: 20px;
+    color: #333;
+  }
 
-    h1 {
-        color: #003c8f;
-        margin-bottom: 20px;
-        text-align: center;
-    }
+  h1 {
+    text-align: center;
+    color: #003c8f;
+    margin-bottom: 20px;
+  }
 
-    label {
-        display: block;
-        margin-top: 15px;
-        font-weight: 600;
-    }
+  .tabs {
+    text-align: center;
+    margin-bottom: 20px;
+  }
 
-    input, select {
-        width: 100%;
-        padding: 10px;
-        margin-top: 5px;
-        border-radius: 5px;
-        border: 1px solid #ccc;
-        box-sizing: border-box;
-        font-size: 14px;
-    }
+  .tabs button {
+    margin: 0 10px;
+    padding: 8px 18px;
+    border-radius: 20px;
+    border: none;
+    background-color: #e1e6ed;
+    color: #003c8f;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.3s;
+  }
 
-    button {
-        padding: 10px 20px;
-        margin-top: 15px;
-        background-color: #0073c9;
-        color: white;
-        border: none;
-        cursor: pointer;
-        border-radius: 5px;
-        font-weight: bold;
-        transition: all 0.3s ease;
-    }
+  .tabs button:hover {
+    background-color: #cfd9e7;
+  }
 
-    button:hover {
-        background-color: #005fa3;
-        transform: translateY(-2px);
-    }
+  form, .filtros, table {
+    max-width: 1200px;
+    margin: auto;
+  }
 
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 15px;
-        background-color: #fff;
-        box-shadow: 0px 2px 5px rgba(0,0,0,0.1);
-    }
+  label {
+    display: block;
+    margin-top: 15px;
+    font-weight: bold;
+  }
 
-    th, td {
-        border: 1px solid #ccc;
-        padding: 10px;
-        text-align: left;
-    }
+  input, select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+  }
 
-    th {
-        background-color: #0073c9;
-        color: white;
-    }
+  button.submit-btn {
+    padding: 10px 20px;
+    margin-top: 15px;
+    background-color: #0073c9;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+  }
 
-    .hidden { display: none; }
+  button.submit-btn:hover {
+    background-color: #005fa3;
+  }
 
-    .tabs {
-        margin-bottom: 20px;
-        text-align: center;
-    }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    background-color: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  }
 
-    .tabs button {
-        margin-right: 10px;
-        border-radius: 20px;
-        padding: 8px 18px;
-        background-color: #e1e6ed;
-        color: #003c8f;
-    }
+  th, td {
+    padding: 12px 15px;
+    text-align: left;
+  }
 
-    .tabs button:hover {
-        background-color: #cfd9e7;
-    }
+  th {
+    background-color: #0073c9;
+    color: white;
+    font-weight: 600;
+  }
 
-    /* Filtro e pesquisa */
-    .filtros {
-        display: flex;
-        gap: 10px;
-        margin-bottom: 10px;
-        flex-wrap: wrap;
-    }
+  tbody tr:nth-child(even) { background-color: #f8f9fb; }
+  tbody tr:hover { background-color: #dbe9f7; }
 
-    .filtros select, .filtros input {
-        flex: 1;
-    }
+  .hidden { display: none; }
 
+  .filtros {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 15px;
+    justify-content: center;
+  }
+
+  .filtros select, .filtros input {
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    outline: none;
+    font-size: 14px;
+    transition: 0.2s;
+  }
+
+  .filtros select:focus, .filtros input:focus {
+    border-color: #0073c9;
+    box-shadow: 0 0 5px rgba(0,115,201,0.3);
+  }
 </style>
 </head>
 <body>
@@ -108,187 +130,180 @@
 <h1>Solicitar Pedido</h1>
 
 <div class="tabs">
-    <button onclick="mostrarAba('cadastro')">Cadastrar Pedido</button>
-    <button onclick="mostrarAba('visualizar')">Visualizar Pedidos</button>
+  <button onclick="mostrarAba('cadastro')">Cadastrar Pedido</button>
+  <button onclick="mostrarAba('visualizar')">Visualizar Pedidos</button>
 </div>
 
 <!-- ======== ABA CADASTRO ======== -->
 <div id="cadastro">
-    <form id="pedidoForm">
-        <label for="numeroPedido">Número do Pedido:</label>
-        <input type="text" id="numeroPedido">
+  <form id="pedidoForm">
+    <label for="numeroPedido">Número do Pedido:</label>
+    <input type="text" id="numeroPedido">
 
-        <label for="fabric">Fábrica:</label>
-        <select id="fabric">
-            <option value="">Selecione</option>
-            <option value="UNA">UNA</option>
-            <option value="ICNB">ICNB</option>
-            <option value="NATUPHITUS">NATUPHITUS</option>
-            <option value="NATURELLE">NATURELLE</option>
-            <option value="AERCAMP">AERCAMP</option>
-            <option value="DECOR">DECOR</option>
-        </select>
+    <label for="fabric">Fábrica:</label>
+    <select id="fabric">
+      <option value="">Selecione</option>
+      <option value="UNA">UNA</option>
+      <option value="ICNB">ICNB</option>
+      <option value="NATUPHITUS">NATUPHITUS</option>
+      <option value="NATURELLE">NATURELLE</option>
+      <option value="AERCAMP">AERCAMP</option>
+      <option value="DECOR">DECOR</option>
+    </select>
 
-        <h2>Itens do Pedido</h2>
-        <div>
-            <input type="text" id="codigoItem" placeholder="Código do Produto">
-            <input type="text" id="descricaoItem" placeholder="Descrição">
-            <input type="number" id="quantidadeItem" placeholder="Quantidade" value="1" min="1">
-            <button type="button" onclick="adicionarItem()">Adicionar Item</button>
-        </div>
+    <h2>Itens do Pedido</h2>
+    <div>
+      <input type="text" id="codigoItem" placeholder="Código do Produto">
+      <input type="text" id="descricaoItem" placeholder="Descrição">
+      <input type="number" id="quantidadeItem" placeholder="Quantidade" value="1" min="1">
+      <button type="button" onclick="adicionarItem()">Adicionar Item</button>
+    </div>
 
-        <table id="itensTable">
-            <thead>
-                <tr>
-                    <th>Código</th>
-                    <th>Descrição</th>
-                    <th>Quantidade</th>
-                    <th>Ações</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
+    <table id="itensTable">
+      <thead>
+        <tr>
+          <th>Código</th>
+          <th>Descrição</th>
+          <th>Quantidade</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
 
-        <button type="button" onclick="enviarPedido()">Enviar Pedido</button>
-    </form>
+    <button type="button" class="submit-btn" onclick="enviarPedido()">Enviar Pedido</button>
+  </form>
 </div>
 
 <!-- ======== ABA VISUALIZAR ======== -->
 <div id="visualizar" class="hidden">
-    <h2>Pedidos Cadastrados</h2>
-
-    <div class="filtros">
-        <select id="filtroFabrica" onchange="filtrarPedidos()">
-            <option value="">Todas as Fábricas</option>
-            <option value="UNA">UNA</option>
-            <option value="ICNB">ICNB</option>
-            <option value="NATUPHITUS">NATUPHITUS</option>
-            <option value="NATURELLE">NATURELLE</option>
-            <option value="AERCAMP">AERCAMP</option>
-            <option value="DECOR">DECOR</option>
-        </select>
-        <input type="text" id="filtroNumero" placeholder="Pesquisar por Número do Pedido" oninput="filtrarPedidos()">
+  <div class="filtros">
+    <div>
+      <label for="filtroFabrica">Filtrar por Fábrica:</label>
+      <select id="filtroFabrica" onchange="filtrarPedidos()">
+        <option value="">Todas</option>
+      </select>
     </div>
+    <div>
+      <label for="filtroNumero">Pesquisar Número do Pedido:</label>
+      <input type="text" id="filtroNumero" oninput="filtrarPedidos()" placeholder="Digite o número do pedido">
+    </div>
+  </div>
 
-    <table id="pedidosTable">
-        <thead>
-            <tr>
-                <th>Número do Pedido</th>
-                <th>Fábrica</th>
-                <th>Código do Item</th>
-                <th>Descrição do Item</th>
-                <th>Quantidade</th>
-                <th>Data do Pedido</th>
-            </tr>
-        </thead>
-        <tbody id="pedidosBody">
-            <tr><td colspan="6">Nenhum pedido encontrado</td></tr>
-        </tbody>
-    </table>
+  <table id="pedidosTable">
+    <thead>
+      <tr>
+        <th>Número do Pedido</th>
+        <th>Fábrica</th>
+        <th>Código do Item</th>
+        <th>Descrição do Item</th>
+        <th>Quantidade</th>
+        <th>Data do Pedido</th>
+      </tr>
+    </thead>
+    <tbody id="pedidosBody">
+      <tr><td colspan="6">Carregando pedidos...</td></tr>
+    </tbody>
+  </table>
 </div>
 
 <script>
 const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbx4mVZMdyDF3qie-OlmI1DMWfTNuB7k_dYUZxAWxGzV_LSH1lKbYF8Vi5p4mwJFkjLZsQ/exec";
+let pedidosCache = [];
 
 // Troca de abas
 function mostrarAba(aba) {
-    document.getElementById('cadastro').classList.add('hidden');
-    document.getElementById('visualizar').classList.add('hidden');
-    document.getElementById(aba).classList.remove('hidden');
-    if (aba === 'visualizar') carregarPedidos();
+  document.getElementById('cadastro').classList.add('hidden');
+  document.getElementById('visualizar').classList.add('hidden');
+  document.getElementById(aba).classList.remove('hidden');
+  if(aba === 'visualizar') carregarPedidos();
 }
 
 // Adicionar Item
 function adicionarItem() {
-    const codigo = document.getElementById('codigoItem').value.trim();
-    const descricao = document.getElementById('descricaoItem').value.trim();
-    const quantidade = document.getElementById('quantidadeItem').value.trim();
-    if (!codigo || !descricao || !quantidade) {
-        alert("Preencha todos os campos do item antes de adicionar.");
-        return;
-    }
-    const tbody = document.querySelector("#itensTable tbody");
-    const tr = document.createElement("tr");
-    tr.innerHTML = `<td>${codigo}</td><td>${descricao}</td><td>${quantidade}</td>
-                    <td><button type="button" onclick="removerItem(this)">Remover</button></td>`;
-    tbody.appendChild(tr);
-    document.getElementById('codigoItem').value = '';
-    document.getElementById('descricaoItem').value = '';
-    document.getElementById('quantidadeItem').value = 1;
+  const codigo = document.getElementById('codigoItem').value.trim();
+  const descricao = document.getElementById('descricaoItem').value.trim();
+  const quantidade = document.getElementById('quantidadeItem').value.trim();
+  if(!codigo || !descricao || !quantidade) { alert("Preencha todos os campos do item."); return; }
+
+  const tbody = document.querySelector("#itensTable tbody");
+  const tr = document.createElement("tr");
+  tr.innerHTML = `<td>${codigo}</td><td>${descricao}</td><td>${quantidade}</td>
+                  <td><button type="button" onclick="removerItem(this)">Remover</button></td>`;
+  tbody.appendChild(tr);
+  document.getElementById('codigoItem').value='';
+  document.getElementById('descricaoItem').value='';
+  document.getElementById('quantidadeItem').value=1;
 }
 
-function removerItem(btn) {
-    btn.closest('tr').remove();
-}
+function removerItem(btn){ btn.closest('tr').remove(); }
 
 // Enviar Pedido
 async function enviarPedido() {
-    const numero = document.getElementById('numeroPedido').value.trim();
-    const fabrica = document.getElementById('fabric').value;
-    const rows = document.querySelectorAll("#itensTable tbody tr");
-    if (!numero || !fabrica) {
-        alert("Preencha o número do pedido e a fábrica.");
-        return;
-    }
-    if (rows.length === 0) {
-        alert("Adicione ao menos um item ao pedido.");
-        return;
-    }
-    const itens = Array.from(rows).map(row => ({
-        codigo: row.cells[0].innerText,
-        descricao: row.cells[1].innerText,
-        quantidade: Number(row.cells[2].innerText)
-    }));
-    const pedido = { numero, fabrica, itens };
-    try {
-        const response = await fetch(WEB_APP_URL, { method: "POST", body: JSON.stringify(pedido) });
-        const result = await response.json();
-        if (result.status === "success") {
-            alert("Pedido enviado com sucesso!");
-            document.getElementById('pedidoForm').reset();
-            document.querySelector("#itensTable tbody").innerHTML = '';
-        } else {
-            alert("Erro: " + result.message);
-        }
-    } catch (err) {
-        alert("Erro de conexão com o servidor.");
-    }
+  const numero = document.getElementById('numeroPedido').value.trim();
+  const fabrica = document.getElementById('fabric').value;
+  const rows = document.querySelectorAll("#itensTable tbody tr");
+  if(!numero || !fabrica) { alert("Preencha número do pedido e fábrica."); return; }
+  if(rows.length===0){ alert("Adicione pelo menos um item."); return; }
+
+  const itens = Array.from(rows).map(r=>({codigo:r.cells[0].innerText,descricao:r.cells[1].innerText,quantidade:Number(r.cells[2].innerText)}));
+  const pedido={numero,fabrica,itens};
+
+  try{
+    const res=await fetch(WEB_APP_URL,{method:"POST",body:JSON.stringify(pedido)});
+    const result=await res.json();
+    if(result.status==="success"){
+      alert("Pedido enviado com sucesso!");
+      document.getElementById('pedidoForm').reset();
+      document.querySelector("#itensTable tbody").innerHTML='';
+    }else{ alert("Erro: "+result.message); }
+  }catch(err){ alert("Erro de conexão."); }
 }
 
 // Carregar Pedidos
-let pedidosCache = [];
-async function carregarPedidos() {
-    const tbody = document.getElementById("pedidosBody");
-    tbody.innerHTML = `<tr><td colspan="6">Carregando...</td></tr>`;
-    try {
-        const res = await fetch(WEB_APP_URL + "?action=get");
-        const pedidos = await res.json();
-        pedidosCache = pedidos;
-        filtrarPedidos();
-    } catch (err) {
-        tbody.innerHTML = `<tr><td colspan="6">Erro ao carregar pedidos</td></tr>`;
-    }
+async function carregarPedidos(){
+  const tbody=document.getElementById("pedidosBody");
+  tbody.innerHTML=`<tr><td colspan="6">Carregando...</td></tr>`;
+  try{
+    const res=await fetch(WEB_APP_URL+"?action=get");
+    const pedidos=await res.json();
+    pedidosCache=pedidos;
+
+    // Popular filtro de fábrica
+    const filtroFabrica=document.getElementById("filtroFabrica");
+    filtroFabrica.innerHTML='<option value="">Todas</option>';
+    [...new Set(pedidos.map(p=>p.fabrica))].forEach(f=>{
+      const opt=document.createElement("option"); opt.value=f; opt.textContent=f;
+      filtroFabrica.appendChild(opt);
+    });
+
+    filtrarPedidos();
+  }catch(err){
+    tbody.innerHTML=`<tr><td colspan="6">Erro ao carregar pedidos</td></tr>`;
+  }
 }
 
 // Filtrar Pedidos
-function filtrarPedidos() {
-    const filtroNumero = document.getElementById('filtroNumero').value.toLowerCase();
-    const filtroFabrica = document.getElementById('filtroFabrica').value;
-    const tbody = document.getElementById("pedidosBody");
-    let filtrados = pedidosCache.filter(p => 
-        (filtroNumero === '' || p.numero.toLowerCase().includes(filtroNumero)) &&
-        (filtroFabrica === '' || p.fabrica === filtroFabrica)
-    );
-    tbody.innerHTML = '';
-    if(filtrados.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6">Nenhum pedido encontrado</td></tr>`;
-        return;
-    }
-    filtrados.forEach(p => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `<td>${p.numero}</td><td>${p.fabrica}</td><td>${p.codigo}</td><td>${p.descricao}</td><td>${p.quantidade}</td><td>${p.dataPedido}</td>`;
-        tbody.appendChild(tr);
-    });
+function filtrarPedidos(){
+  const filtroNumero=document.getElementById('filtroNumero').value.toLowerCase();
+  const filtroFabrica=document.getElementById('filtroFabrica').value.toLowerCase();
+  const tbody=document.getElementById("pedidosBody");
+  tbody.innerHTML='';
+
+  const filtrados=pedidosCache.filter(p=>
+    (filtroNumero==='' || p.numero.toLowerCase().includes(filtroNumero)) &&
+    (filtroFabrica==='' || p.fabrica.toLowerCase()===filtroFabrica)
+  );
+
+  if(filtrados.length===0){ tbody.innerHTML='<tr><td colspan="6">Nenhum pedido encontrado</td></tr>'; return; }
+
+  filtrados.forEach(p=>{
+    const tr=document.createElement("tr");
+    tr.dataset.numero=p.numero;
+    tr.dataset.fabrica=p.fabrica;
+    tr.innerHTML=`<td>${p.numero}</td><td>${p.fabrica}</td><td>${p.codigo}</td><td>${p.descricao}</td><td>${p.quantidade}</td><td>${p.dataPedido}</td>`;
+    tbody.appendChild(tr);
+  });
 }
 </script>
 
