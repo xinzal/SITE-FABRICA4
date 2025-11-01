@@ -123,6 +123,7 @@
     border-color: #0073c9;
     box-shadow: 0 0 5px rgba(0,115,201,0.3);
   }
+
 </style>
 </head>
 <body>
@@ -284,24 +285,36 @@ async function carregarPedidos(){
 }
 
 // Filtrar Pedidos
-function filtrarPedidos(){
-  const filtroNumero=document.getElementById('filtroNumero').value.toLowerCase();
-  const filtroFabrica=document.getElementById('filtroFabrica').value.toLowerCase();
-  const tbody=document.getElementById("pedidosBody");
-  tbody.innerHTML='';
+function filtrarPedidos() {
+  const filtroNumero = document.getElementById('filtroNumero').value.trim().toLowerCase();
+  const filtroFabrica = document.getElementById('filtroFabrica').value.trim().toLowerCase();
+  const tbody = document.getElementById("pedidosBody");
+  tbody.innerHTML = '';
 
-  const filtrados=pedidosCache.filter(p=>
-    (filtroNumero==='' || p.numero.toLowerCase().includes(filtroNumero)) &&
-    (filtroFabrica==='' || p.fabrica.toLowerCase()===filtroFabrica)
-  );
+  const filtrados = pedidosCache.filter(p => {
+    const numeroStr = String(p.numero).toLowerCase();
+    const fabricaStr = String(p.fabrica).toLowerCase();
+    return (filtroNumero === '' || numeroStr.includes(filtroNumero)) &&
+           (filtroFabrica === '' || fabricaStr === filtroFabrica);
+  });
 
-  if(filtrados.length===0){ tbody.innerHTML='<tr><td colspan="6">Nenhum pedido encontrado</td></tr>'; return; }
+  if (filtrados.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="6">Nenhum pedido encontrado</td></tr>';
+    return;
+  }
 
-  filtrados.forEach(p=>{
-    const tr=document.createElement("tr");
-    tr.dataset.numero=p.numero;
-    tr.dataset.fabrica=p.fabrica;
-    tr.innerHTML=`<td>${p.numero}</td><td>${p.fabrica}</td><td>${p.codigo}</td><td>${p.descricao}</td><td>${p.quantidade}</td><td>${p.dataPedido}</td>`;
+  filtrados.forEach(p => {
+    const tr = document.createElement("tr");
+    tr.dataset.numero = String(p.numero);
+    tr.dataset.fabrica = String(p.fabrica);
+    tr.innerHTML = `
+      <td>${p.numero}</td>
+      <td>${p.fabrica}</td>
+      <td>${p.codigo}</td>
+      <td>${p.descricao}</td>
+      <td>${p.quantidade}</td>
+      <td>${p.dataPedido}</td>
+    `;
     tbody.appendChild(tr);
   });
 }
